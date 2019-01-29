@@ -242,9 +242,27 @@ class YCPBoolean;
 %ignore YCPEntryRep;
 %ignore YCPEntry;
 %ignore YCPCodeRep;
+%feature("docstring") YCPCode "
+A Code object is defined by passing a function pointer as the first argument,
+and a tuple of arguments as the second argument.
+
+Examples:
+Code(func_ptr)
+Code(func_ptr, (arg1, ))
+Code(func_ptr, (arg1, arg2))
+Code(func_ptr, (arg1, arg2, arg3))
+
+The function will not be evaluated until the evaluate() function is called
+on the Code object.
+"
 %rename(Code) YCPCode;
 %include <ycp/YCPCode.h>
 %extend YCPCode {
+    YCPCode(PyObject *input, PyObject *args=NULL) {
+        YPythonCode *code = new YPythonCode(input, args);
+        YCPCode *n = new YCPCode(code);
+        return n;
+    }
     YCodePtr code() {
         return (*($self))->code();
     }

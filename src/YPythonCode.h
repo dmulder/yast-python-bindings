@@ -8,7 +8,7 @@ class YPythonCode : public YCode
 {
 
 public:
-     YPythonCode (PyObject *pFunc);
+     YPythonCode (PyObject *pFunc, PyObject *pArgs);
 
      YCode::ykind kind() const;
 
@@ -23,6 +23,7 @@ public:
 private:
      ykind m_kind;
      PyObject *_pFunc;
+     PyObject *_pArgs;
 
 };
 

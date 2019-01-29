@@ -31,12 +31,6 @@ using namespace std;
 %typemap(in) YCPList {
     $1 = pyval_to_ycp($input)->asList();
 }
-%typemap(in) YCodePtr {
-    $1 = new YPythonCode($input);
-}
-%typemap(typecheck,precedence=5000) YCodePtr {
-    $1 = PyFunction_Check(PyTuple_GetItem($input, 0));
-}
 
 %include "yast.h"
 

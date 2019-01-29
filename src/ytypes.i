@@ -33,10 +33,11 @@ YCPValue pyval_to_ycp(PyObject *input)
     if (PyList_Check(input)) {
         auto size = PyList_Size(input);
         if (size > 0 && PyFunction_Check(PyList_GetItem(input, 0))) {
-            auto t = PyTuple_New(size);
-            for (int i = 0; i < size; i++)
+            auto t = PyTuple_New(size-1);
+            auto func_ptr = PyList_GetItem(input, 0);
+            for (int i = 1; i < size; i++)
                 PyTuple_SetItem(t, i, PyList_GetItem(input, i));
-            return YCPCode(new YPythonCode(t));
+            return YCPCode(new YPythonCode(func_ptr, t));
         } else {
             YCPList l;
             for (int i = 0; i < size; i++)

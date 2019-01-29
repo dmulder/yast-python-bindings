@@ -1,27 +1,22 @@
 #include "YPythonCode.h"
+#include <Python.h>
 
-YPythonCode::YPythonCode (PyObject *pFunc):YCode() {
+YPythonCode::YPythonCode (PyObject *pFunc, PyObject *pArgs):YCode() {
     m_kind = YCode::yeReference;
     _pFunc = pFunc;
+    _pArgs = pArgs;
 }
 
 YCPValue YPythonCode::evaluate(bool cse) {
     PyObject * pReturn = NULL;
     YCPValue result = YCPVoid();
-    PyObject * pFunction = NULL;
-    PyObject * pArgs = NULL;
-    int args_size;
 
-    args_size = PyTuple_Size(_pFunc);
-
-    if (args_size >=1) {
-        pFunction = PyTuple_GetItem(_pFunc, 0);
-        if (args_size > 1) {
-            pArgs = PyTuple_GetSlice(_pFunc, 1, args_size);
-        }
+    if (!PyFunction_Check(_pFunc) || (_pArgs != NULL and !PyTuple_Check(_pArgs))) {
+        return result;
     }
+
     if (Py_IsInitialized()) {
-        pReturn = PyObject_CallObject(pFunction, pArgs);
+        pReturn = PyObject_CallObject(_pFunc, _pArgs);
         if (pReturn)
             result = pyval_to_ycp(pReturn);
     }
